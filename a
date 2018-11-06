@@ -1,0 +1,45 @@
+import requests
+r=requests.get('https://www.vox.com/2018/9/25/17901082/trump-un-2018-speech-full-text')
+r.encoding='utf8'
+data=str(r.text)
+
+begin=data.find('One year ago')
+end=data.rfind('Thank you very much. Thank you.')
+end=end+31
+
+words=data[begin:end]
+
+for a in range(999):
+    if '<p id=' in words:
+        a=words.find('<p')
+        b=words.find('id="')
+        c=words[a:b+12]
+        words=words.replace(c, ' ')
+        
+words=words.replace(',', ' ')
+words=words.replace('</p>',' ')
+words=words.replace('.', ' ')
+words=words.replace(':',' ')
+words=words.replace('—',' ')
+words=words.replace('>',' ')
+words=words.replace('"',' ')
+words=words.replace('-',' ')
+words=words.replace('–',' ')
+words=words.replace('’s',' ')
+words=words.replace('Laughter and applause', ' ')
+
+words=words.lower()
+
+mydict={}
+words=words.split()
+for w in words:
+    if w in mydict:
+        mydict[w]+=1
+    else:
+        mydict[w]=1
+
+
+print('제일 많은 수 부터 역순으로 최다빈도 단어 20개')
+s=sorted(mydict, key=mydict.__getitem__, reverse=True)
+for k in s[:20]:
+    print('%s: %s' %(k, mydict[k]))
